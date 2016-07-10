@@ -1,6 +1,17 @@
 # coding: utf-8
 import tensorflow as tf
 import numpy as np
+import sys
+
+def progress(count, total, cost, status=''):
+    bar_len = 30
+    filled_len = int(round(bar_len * count / float(total)))
+
+    percents = round(100.0 * count / float(total), 1)
+    bar = '=' * filled_len + '-' * (bar_len - filled_len)
+
+    sys.stdout.write('[%s] %s %s  cost: %s\r' % (bar, percents, '%', cost))
+    sys.stdout.flush()
 
 def accuerncy(hypo, test):
     total = float(len(hypo))
@@ -30,17 +41,19 @@ y_one_hot = make_one_hot(y_data)
 hypo= tf.nn.softmax(tf.sigmoid(tf.matmul(X, Weight) + bias))
 cross_entropy = -tf.reduce_sum(Y*tf.log(hypo))#-tf.reduce_sum(Y*tf.log(hypo))
 
-optimizer = tf.train.AdamOptimizer(0.03)
+optimizer = tf.train.AdamOptimizer(0.001)
 train = optimizer.minimize(cross_entropy)
 
 sess = tf.Session()
 sess.run(tf.initialize_all_variables())
-rate = 10000
+rate = 100000
 print "cross_entrophy: ",sess.run(cross_entropy, feed_dict={X:x_data, Y:y_one_hot})
+print "Now training.."
 for step in xrange(rate):
     sess.run(train, feed_dict={X:x_data, Y:y_one_hot})
-    if step % 1000 == 0:
-        print "cross_entrophy: ",sess.run(cross_entropy, feed_dict={X:x_data, Y:y_one_hot})
+    progress(step, rate-1, sess.run(cross_entropy, feed_dict={X:x_data, Y:y_one_hot}))
+
+print "Training completed.."
 print "cross_entrophy: ",sess.run(cross_entropy, feed_dict={X:x_data, Y:y_one_hot})
 print "weight: ", sess.run(Weight)
 print "bias: ", sess.run(bias)
