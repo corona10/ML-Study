@@ -30,7 +30,7 @@ y_one_hot = make_one_hot(y_data)
 hypo= tf.nn.softmax(tf.sigmoid(tf.matmul(X, Weight) + bias))
 cross_entropy = -tf.reduce_sum(Y*tf.log(hypo))#-tf.reduce_sum(Y*tf.log(hypo))
 
-optimizer = tf.train.AdamOptimizer(0.01)
+optimizer = tf.train.AdamOptimizer(0.03)
 train = optimizer.minimize(cross_entropy)
 
 sess = tf.Session()
