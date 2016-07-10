@@ -27,7 +27,7 @@ Weight = tf.Variable(tf.random_uniform([21,2], -1.0, 1.0))
 bias  = tf.Variable(tf.random_uniform([1,2], -1.0, 1.0))
 
 y_one_hot = make_one_hot(y_data)
-hypo= tf.sigmoid(tf.nn.softmax(tf.matmul(X, Weight) + bias))
+hypo= tf.nn.softmax(tf.sigmoid(tf.matmul(X, Weight) + bias))
 cross_entropy = -tf.reduce_sum(Y*tf.log(hypo))#-tf.reduce_sum(Y*tf.log(hypo))
 
 optimizer = tf.train.AdamOptimizer(0.01)
