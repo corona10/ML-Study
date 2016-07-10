@@ -27,15 +27,15 @@ Weight = tf.Variable(tf.random_uniform([21,2], -1.0, 1.0))
 bias  = tf.Variable(tf.random_uniform([1,2], -1.0, 1.0))
 
 y_one_hot = make_one_hot(y_data)
-hypo= tf.nn.softmax(tf.matmul(X, Weight) + bias) 
-cross_entropy = -tf.reduce_sum(Y*tf.log(hypo + 1e-12))#-tf.reduce_sum(Y*tf.log(hypo))
+hypo= tf.sigmoid(tf.nn.softmax(tf.matmul(X, Weight) + bias))
+cross_entropy = -tf.reduce_sum(Y*tf.log(hypo))#-tf.reduce_sum(Y*tf.log(hypo))
 
-optimizer = tf.train.AdagradOptimizer(0.05)
+optimizer = tf.train.AdamOptimizer(0.01)
 train = optimizer.minimize(cross_entropy)
 
 sess = tf.Session()
 sess.run(tf.initialize_all_variables())
-rate = 5000
+rate = 10000
 print "cross_entrophy: ",sess.run(cross_entropy, feed_dict={X:x_data, Y:y_one_hot})
 for step in xrange(rate):
     sess.run(train, feed_dict={X:x_data, Y:y_one_hot})
@@ -50,10 +50,10 @@ data[np.isnan(data)] = 0.0
 x_test = data.T[:-1].T
 y_test = data.T[-1]
 test_y_one_hot = make_one_hot(y_test)
-all = sess.run(hypo, feed_dict={X:x_data, Y:y_one_hot})
+all = sess.run(hypo, feed_dict={X:x_test, Y:test_y_one_hot})
 all= sess.run(tf.arg_max(all,1))
 
-print "accurency: ",accuerncy(all, y_data)
+print "accurency: ",accuerncy(all, y_test)
 print all
 
 sess.close()
