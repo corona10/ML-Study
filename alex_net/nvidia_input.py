@@ -1,19 +1,17 @@
+import os
 import tensorflow as tf
 import numpy as np
 import config
 
 FLAGS = tf.app.flags.FLAGS
-DATA_DIR = '/Users/corona10/Downloads/nv_dlcontest_dataset/'
-TRAIN_DIR = DATA_DIR + "train/"
-TEST_DIR = DATA_DIR + "test/"
-META_TRAIN_FILES = DATA_DIR + "/meta/train.txt"
-META_TEST_FILES = DATA_DIR + "/meta/test.txt"
 
-FLAGS = tf.app.flags.FLAGS
-filenames = []
+def list_binary_files(folder):
+    return [folder +'/'+ d for d in os.listdir(folder) if os.path.isfile(os.path.join(folder, d))]
 
 def read_raw_images(data_set):
-    filename = ['./data/' + data_set + '_data.bin']
+    dirs = './data/'+data_set+'/'
+    filename = list_binary_files(dirs)
+    print filename
     filename_queue = tf.train.string_input_producer(filename)
 
     if data_set is 'train':
@@ -84,7 +82,6 @@ def get_data(data_set, batch_size):
 
 def main(argv = None):
     label, input = get_data('train', 10)
-    input_test = get_data('test', 10)
     sess = tf.Session()
     init = tf.initialize_all_variables()
     sess.run(init)
